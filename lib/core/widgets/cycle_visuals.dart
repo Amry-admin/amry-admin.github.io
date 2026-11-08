@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' show DateFormat;
 
 import '../../domain/cycle_calculator.dart';
 import '../../domain/dates.dart';
@@ -31,12 +31,12 @@ IconData moodIcon(Mood m) => switch (m) {
       Mood.other => Icons.more_horiz,
     };
 
-IconData flowIcon(Flow f) => switch (f) {
-      Flow.none => Icons.block,
-      Flow.spotting => Icons.grain,
-      Flow.light => Icons.water_drop_outlined,
-      Flow.medium => Icons.water_drop,
-      Flow.heavy => Icons.invert_colors,
+IconData flowIcon(FlowLevel f) => switch (f) {
+      FlowLevel.none => Icons.block,
+      FlowLevel.spotting => Icons.grain,
+      FlowLevel.light => Icons.water_drop_outlined,
+      FlowLevel.medium => Icons.water_drop,
+      FlowLevel.heavy => Icons.invert_colors,
     };
 
 enum DayMark { none, period, predictedPeriod, fertile, ovulation }

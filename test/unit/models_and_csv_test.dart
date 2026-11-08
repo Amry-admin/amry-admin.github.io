@@ -13,7 +13,7 @@ void main() {
         'mood': ['low_energy'],
         'notes': 'tired',
       });
-      expect(log.flow, Flow.medium);
+      expect(log.flow, FlowLevel.medium);
       expect(log.symptoms, [Symptom.cramps, Symptom.backPain]);
       expect(log.moods, [Mood.lowEnergy]);
       final row = log.toRow();
@@ -58,7 +58,7 @@ void main() {
         logs: [
           DailyLog(
             date: DateTime.utc(2026, 9, 2),
-            flow: Flow.heavy,
+            flow: FlowLevel.heavy,
             symptoms: const [Symptom.cramps, Symptom.headache],
             moods: const [Mood.sad],
             notes: 'said "ouch", then rested',

@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' show DateFormat;
 
 import '../../core/constants/app_text.dart';
 import '../../core/platform/platform_actions.dart';
@@ -173,7 +173,7 @@ class _NextPeriodCard extends StatelessWidget {
     final fmt = DateFormat('EEE, d MMM yyyy');
     String eyebrow;
     String headline;
-    String? detail;
+    String detail;
     String? source;
 
     if (s.ongoingPeriod != null) {
@@ -210,8 +210,7 @@ class _NextPeriodCard extends StatelessWidget {
 
     return Semantics(
       container: true,
-      label: [eyebrow.toLowerCase(), headline, if (detail != null) detail]
-          .join(', '),
+      label: [eyebrow.toLowerCase(), headline, detail].join(', '),
       excludeSemantics: true,
       child: SoftCard(
         gradient: context.cycle.heroGradient,
@@ -249,10 +248,8 @@ class _NextPeriodCard extends StatelessWidget {
                       fontSize: s.hasEstimate || s.ongoingPeriod != null ? 34 : 22,
                     ),
                   ),
-                  if (detail != null) ...[
-                    const SizedBox(height: 2),
-                    Text(detail, style: context.text.bodyMedium),
-                  ],
+                  const SizedBox(height: 2),
+                  Text(detail, style: context.text.bodyMedium),
                   if (s.cycleDay != null && s.cycleDay! <= 60) ...[
                     const SizedBox(height: 10),
                     Pill('Cycle day ${s.cycleDay}'),

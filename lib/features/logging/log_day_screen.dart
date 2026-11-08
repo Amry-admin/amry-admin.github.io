@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' show DateFormat;
 
 import '../../core/providers.dart';
 import '../../core/theme/app_theme.dart';
@@ -25,7 +25,7 @@ class LogDayScreen extends ConsumerStatefulWidget {
 
 class _LogDayScreenState extends ConsumerState<LogDayScreen> {
   late DateTime _date;
-  Flow _flow = Flow.none;
+  FlowLevel _flow = FlowLevel.none;
   final Set<Symptom> _symptoms = {};
   final Set<Mood> _moods = {};
   final _notes = TextEditingController();
@@ -49,7 +49,7 @@ class _LogDayScreenState extends ConsumerState<LogDayScreen> {
 
   void _loadFrom(DailyLog? log) {
     _existingId = log?.id;
-    _flow = log?.flow ?? Flow.none;
+    _flow = log?.flow ?? FlowLevel.none;
     _symptoms
       ..clear()
       ..addAll(log?.symptoms ?? const []);
@@ -169,12 +169,12 @@ class _LogDayScreenState extends ConsumerState<LogDayScreen> {
                 _grid(
                   columns: 5,
                   children: [
-                    for (final f in Flow.values)
+                    for (final f in FlowLevel.values)
                       ChoiceTile(
                         label: f.label,
                         icon: flowIcon(f),
                         selected: _flow == f,
-                        color: f == Flow.none
+                        color: f == FlowLevel.none
                             ? context.cycle.muted
                             : context.cycle.period,
                         onTap: () => setState(() => _flow = f),

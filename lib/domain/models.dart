@@ -48,21 +48,21 @@ class Period {
       );
 }
 
-enum Flow {
+enum FlowLevel {
   none('none', 'None'),
   spotting('spotting', 'Spotting'),
   light('light', 'Light'),
   medium('medium', 'Medium'),
   heavy('heavy', 'Heavy');
 
-  const Flow(this.db, this.label);
+  const FlowLevel(this.db, this.label);
   final String db;
   final String label;
 
   bool get isBleeding => this == light || this == medium || this == heavy;
 
-  static Flow fromDb(String? v) =>
-      Flow.values.firstWhere((f) => f.db == v, orElse: () => Flow.none);
+  static FlowLevel fromDb(String? v) =>
+      FlowLevel.values.firstWhere((f) => f.db == v, orElse: () => FlowLevel.none);
 }
 
 enum Symptom {
@@ -114,7 +114,7 @@ class DailyLog {
   const DailyLog({
     this.id,
     required this.date,
-    this.flow = Flow.none,
+    this.flow = FlowLevel.none,
     this.symptoms = const [],
     this.moods = const [],
     this.notes,
@@ -122,13 +122,13 @@ class DailyLog {
 
   final String? id;
   final DateTime date;
-  final Flow flow;
+  final FlowLevel flow;
   final List<Symptom> symptoms;
   final List<Mood> moods;
   final String? notes;
 
   bool get isEmpty =>
-      flow == Flow.none &&
+      flow == FlowLevel.none &&
       symptoms.isEmpty &&
       moods.isEmpty &&
       (notes == null || notes!.trim().isEmpty);
@@ -136,7 +136,7 @@ class DailyLog {
   factory DailyLog.fromRow(Map<String, dynamic> row) => DailyLog(
         id: row['id'] as String?,
         date: parseDbDate(row['log_date'] as String),
-        flow: Flow.fromDb(row['flow'] as String?),
+        flow: FlowLevel.fromDb(row['flow'] as String?),
         symptoms: (row['symptoms'] as List? ?? const [])
             .whereType<String>()
             .map(Symptom.fromDb)
