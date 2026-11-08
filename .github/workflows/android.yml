@@ -28,6 +28,9 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Work out web address
+        run: .github/scripts/site_env.sh
+
       - name: Static analysis
         run: .github/scripts/run_and_report.sh "flutter analyze" flutter analyze
 
@@ -42,7 +45,8 @@ jobs:
           .github/scripts/run_and_report.sh "flutter build apk" \
             flutter build apk --release \
               --dart-define=SUPABASE_URL="$SUPABASE_URL" \
-              --dart-define=SUPABASE_ANON_KEY="$SUPABASE_ANON_KEY"
+              --dart-define=SUPABASE_ANON_KEY="$SUPABASE_ANON_KEY" \
+              --dart-define=WEB_APP_URL="$WEB_APP_URL"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4

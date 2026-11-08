@@ -2,7 +2,7 @@ name: cyclesync
 description: "CycleSync: private menstrual cycle and wellness tracker."
 publish_to: 'none'
 
-version: 0.1.0+1
+version: 1.0.0+2
 
 environment:
   sdk: ^3.5.0
@@ -31,3 +31,15 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/images/
+
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins-Regular.ttf
+        - asset: assets/fonts/Poppins-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Poppins-Bold.ttf
+          weight: 700

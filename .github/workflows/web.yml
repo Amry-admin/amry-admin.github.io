@@ -31,14 +31,15 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Work out web address
+        run: .github/scripts/site_env.sh
+
       - name: Static analysis
         run: .github/scripts/run_and_report.sh "flutter analyze" flutter analyze
 
       - name: Tests
         run: .github/scripts/run_and_report.sh "flutter test" flutter test
 
-      # Site lives at https://ebrahim-omar0729.github.io/cyclesync/ so the
-      # base path is the repository name.
       - name: Build web
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -46,9 +47,10 @@ jobs:
         run: |
           .github/scripts/run_and_report.sh "flutter build web" \
             flutter build web --release \
-              --base-href "/cyclesync/" \
+              --base-href "$BASE_HREF" \
               --dart-define=SUPABASE_URL="$SUPABASE_URL" \
-              --dart-define=SUPABASE_ANON_KEY="$SUPABASE_ANON_KEY"
+              --dart-define=SUPABASE_ANON_KEY="$SUPABASE_ANON_KEY" \
+              --dart-define=WEB_APP_URL="$WEB_APP_URL"
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

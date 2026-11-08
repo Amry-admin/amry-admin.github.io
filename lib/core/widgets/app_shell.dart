@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import '../providers.dart';
+import 'common.dart';
 
 class _Destination {
   const _Destination(this.label, this.icon, this.selectedIcon);
@@ -9,15 +13,15 @@ class _Destination {
 }
 
 const _destinations = <_Destination>[
-  _Destination('Home', Icons.home_outlined, Icons.home),
-  _Destination('Calendar', Icons.calendar_month_outlined, Icons.calendar_month),
-  _Destination('Log', Icons.edit_note_outlined, Icons.edit_note),
-  _Destination('Insights', Icons.insights_outlined, Icons.insights),
-  _Destination('Profile', Icons.person_outline, Icons.person),
+  _Destination('Home', Icons.home_outlined, Icons.home_rounded),
+  _Destination('Calendar', Icons.calendar_month_outlined,
+      Icons.calendar_month_rounded),
+  _Destination('Insights', Icons.insights_outlined, Icons.insights_rounded),
+  _Destination('More', Icons.grid_view_outlined, Icons.grid_view_rounded),
 ];
 
-/// Bottom navigation on phones; side rail with centred content on wide screens.
-class AppShell extends StatelessWidget {
+/// Bottom navigation on phones; side rail on wide screens.
+class AppShell extends ConsumerWidget {
   const AppShell({super.key, required this.navigationShell});
 
   static const double wideBreakpoint = 840;
@@ -32,37 +36,38 @@ class AppShell extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Keeps Android reminders in step with the latest data.
+    ref.watch(reminderSyncProvider);
+
     final isWide = MediaQuery.sizeOf(context).width >= wideBreakpoint;
 
     if (isWide) {
-      return Scaffold(
-        body: Row(
-          children: [
-            NavigationRail(
-              selectedIndex: navigationShell.currentIndex,
-              onDestinationSelected: _select,
-              labelType: NavigationRailLabelType.all,
-              destinations: [
-                for (final d in _destinations)
-                  NavigationRailDestination(
-                    icon: Icon(d.icon),
-                    selectedIcon: Icon(d.selectedIcon),
-                    label: Text(d.label),
-                  ),
-              ],
-            ),
-            const VerticalDivider(width: 1),
-            Expanded(
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 720),
-                  child: navigationShell,
+      return GradientBackground(
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Row(
+            children: [
+              NavigationRail(
+                selectedIndex: navigationShell.currentIndex,
+                onDestinationSelected: _select,
+                labelType: NavigationRailLabelType.all,
+                leading: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: AppLogo(size: 44),
                 ),
+                destinations: [
+                  for (final d in _destinations)
+                    NavigationRailDestination(
+                      icon: Icon(d.icon),
+                      selectedIcon: Icon(d.selectedIcon),
+                      label: Text(d.label),
+                    ),
+                ],
               ),
-            ),
-          ],
+              Expanded(child: navigationShell),
+            ],
+          ),
         ),
       );
     }
