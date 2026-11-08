@@ -9,7 +9,7 @@ Private period and cycle tracker. Flutter (Android + web/PWA) with Supabase.
 
 | Phase | What | State |
 | --- | --- | --- |
-| 1 | Foundation: theme, navigation, Supabase connection check, CI | In progress |
+| 1 | Foundation: theme, navigation, Supabase connection check, CI | Done |
 | 2 | Sign-up, login, onboarding, disclaimer | Not started |
 | 3 | Period + daily logging, calendar, cycle calculations | Not started |
 | 4 | History, insights, CSV export | Not started |
