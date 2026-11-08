@@ -20,7 +20,8 @@ Future<void> main() async {
 
   await Supabase.initialize(
     url: AppConfig.supabaseUrl.trim(),
-    anonKey: AppConfig.supabaseAnonKey.trim(),
+    // Accepts the publishable key or the legacy anon key; both are public.
+    publishableKey: AppConfig.supabaseAnonKey.trim(),
   );
 
   runApp(const ProviderScope(child: CycleSyncApp()));
