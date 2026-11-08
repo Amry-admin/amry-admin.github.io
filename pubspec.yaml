@@ -1,0 +1,21 @@
+name: cyclesync
+description: "CycleSync: private menstrual cycle and wellness tracker."
+publish_to: 'none'
+
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.5.0
+
+# Packages are added with `flutter pub add` (see README) so that versions
+# are resolved against the installed Flutter SDK and locked in pubspec.lock.
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true

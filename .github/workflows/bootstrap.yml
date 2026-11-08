@@ -1,0 +1,129 @@
+name: Bootstrap Flutter project (one-time)
+
+# Generates the standard Android and web platform files with the current
+# stable Flutter, adds packages at versions compatible with it, and commits
+# the result. Does nothing once the android/ folder exists.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/bootstrap.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check whether already bootstrapped
+        id: check
+        run: |
+          if [ -d android ]; then
+            echo "Already bootstrapped; nothing to do."
+            echo "needed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "needed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up Flutter
+        if: steps.check.outputs.needed == 'true'
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Show versions
+        if: steps.check.outputs.needed == 'true'
+        run: |
+          flutter --version
+          v=$(flutter --version | head -1)
+          echo "::notice title=Flutter version::$v"
+
+      - name: Generate Android and web platform files
+        if: steps.check.outputs.needed == 'true'
+        run: |
+          flutter create \
+            --platforms=android,web \
+            --org io.github.ebrahimomar0729 \
+            --project-name cyclesync \
+            .
+          # The template test refers to a demo app we do not have.
+          rm -f test/widget_test.dart
+
+      - name: Add packages (versions resolved for this Flutter)
+        if: steps.check.outputs.needed == 'true'
+        run: |
+          flutter pub add supabase_flutter flutter_riverpod go_router intl
+          flutter pub add --dev flutter_lints
+          echo "----- resolved -----"
+          grep -A1 -E '^  (supabase_flutter|flutter_riverpod|go_router|intl|flutter_lints):' pubspec.lock || true
+          deps=$(grep -E '^  (supabase_flutter|flutter_riverpod|go_router|intl|flutter_lints):' pubspec.yaml | tr -s ' ' | tr '\n' ';')
+          echo "::notice title=Pinned packages::$deps"
+
+      - name: Configure Android app (name and internet permission)
+        if: steps.check.outputs.needed == 'true'
+        run: |
+          m=android/app/src/main/AndroidManifest.xml
+          sed -i 's/android:label="cyclesync"/android:label="CycleSync"/' "$m"
+          if ! grep -q 'android.permission.INTERNET' "$m"; then
+            sed -i '0,/<manifest[^>]*>/s//&\n    <uses-permission android:name="android.permission.INTERNET" \/>/' "$m"
+          fi
+          head -5 "$m"
+
+      - name: Configure web app manifest
+        if: steps.check.outputs.needed == 'true'
+        run: |
+          f=web/manifest.json
+          jq '.name="CycleSync" | .short_name="CycleSync"
+              | .description="Private period and cycle tracker"
+              | .background_color="#FFF8F9" | .theme_color="#8E4A6B"
+              | .display="standalone"' "$f" > "$f.tmp" && mv "$f.tmp" "$f"
+          sed -i 's#<title>cyclesync</title>#<title>CycleSync</title>#' web/index.html
+          sed -i 's#content="cyclesync"#content="CycleSync"#' web/index.html
+
+      - name: Format
+        if: steps.check.outputs.needed == 'true'
+        run: dart format lib test
+
+      - name: Analyze (report only)
+        if: steps.check.outputs.needed == 'true'
+        run: |
+          set +e
+          flutter analyze > analyze.txt 2>&1
+          code=$?
+          cat analyze.txt
+          if [ $code -ne 0 ]; then
+            msg=$(tail -c 3500 analyze.txt | sed ':a;N;$!ba;s/%/%25/g;s/\r/%0D/g;s/\n/%0A/g')
+            echo "::error title=flutter analyze::$msg"
+          fi
+          rm -f analyze.txt
+
+      - name: Test (report only)
+        if: steps.check.outputs.needed == 'true'
+        run: |
+          set +e
+          flutter test > test.txt 2>&1
+          code=$?
+          cat test.txt
+          if [ $code -ne 0 ]; then
+            msg=$(grep -v '^\s*$' test.txt | tail -c 3500 | sed ':a;N;$!ba;s/%/%25/g;s/\r/%0D/g;s/\n/%0A/g')
+            echo "::error title=flutter test::$msg"
+          else
+            echo "::notice title=flutter test::$(tail -1 test.txt)"
+          fi
+          rm -f test.txt
+
+      - name: Commit generated files
+        if: steps.check.outputs.needed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898099+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git status --short
+          git commit -m "Bootstrap Flutter Android/web platform files and pin packages"
+          git push
