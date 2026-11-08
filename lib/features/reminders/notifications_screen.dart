@@ -1,5 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../core/platform/platform_actions.dart';
+import '../../routing/app_router.dart';
 
 import '../../core/providers.dart';
 import '../../core/theme/app_theme.dart';
@@ -92,6 +97,10 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                     title: const Text('Enable reminders'),
                   ),
                 ),
+                if (kIsWeb) ...[
+                  const SectionTitle('This device'),
+                  const _WebPushCard(),
+                ],
                 const SectionTitle('Reminders'),
                 SoftCard(
                   padding: const EdgeInsets.symmetric(vertical: 6),
@@ -177,7 +186,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                   tint: context.cycle.softLavenderCard,
                   text: NotificationService.supported
                       ? 'Reminders arrive as phone notifications. Estimates can change, so reminders update when you log.'
-                      : 'In the web app, reminders show on the Home screen when you open CycleSync. Phone notifications need the Android app.',
+                      : 'Reminders also show on the Home screen when you open CycleSync. Estimates can change, so reminders update when you log.',
                 ),
                 const SizedBox(height: 12),
                 const NoticeCard(
@@ -192,6 +201,133 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                 ),
               ],
             ),
+    );
+  }
+}
+
+/// Turns browser notifications (web push) on or off for this device.
+class _WebPushCard extends ConsumerStatefulWidget {
+  const _WebPushCard();
+
+  @override
+  ConsumerState<_WebPushCard> createState() => _WebPushCardState();
+}
+
+class _WebPushCardState extends ConsumerState<_WebPushCard> {
+  WebPushState? _state;
+  bool _busy = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _refresh();
+  }
+
+  Future<void> _refresh() async {
+    final s = await webPushState();
+    if (mounted) setState(() => _state = s);
+  }
+
+  Future<void> _turnOn() async {
+    setState(() => _busy = true);
+    final repo = ref.read(repositoryProvider);
+    try {
+      final key = await repo.fetchPushPublicKey();
+      final sub = await subscribeWebPush(key);
+      if (sub == null) {
+        if (mounted) {
+          showMessage(context, 'Notifications were not allowed.');
+        }
+      } else {
+        await repo.savePushSubscription(sub);
+        ref.invalidate(reminderSyncProvider);
+        if (mounted) showMessage(context, 'Notifications are on for this device');
+      }
+    } on AppException catch (e) {
+      if (mounted) showMessage(context, e.message);
+    } catch (_) {
+      if (mounted) {
+        showMessage(context, "Couldn't turn on notifications in this browser.");
+      }
+    } finally {
+      await _refresh();
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _turnOff() async {
+    setState(() => _busy = true);
+    try {
+      final endpoint = await currentWebPushEndpoint();
+      if (endpoint != null) {
+        await ref.read(repositoryProvider).deletePushSubscription(endpoint);
+      }
+      await unsubscribeWebPush();
+    } on AppException catch (e) {
+      if (mounted) showMessage(context, e.message);
+    } finally {
+      await _refresh();
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = _state;
+    String text;
+    Widget? action;
+    switch (state) {
+      case null:
+        text = 'Checking this browser…';
+      case WebPushState.enabled:
+        text = 'Notifications are on. Reminders arrive even when CycleSync '
+            'is closed.';
+        action = OutlinedButton(
+          onPressed: _busy ? null : _turnOff,
+          child: const Text('Turn off on this device'),
+        );
+      case WebPushState.notAsked:
+        text = 'Get reminders as notifications, even when CycleSync is closed.';
+        action = GradientButton(
+          label: 'Turn on notifications',
+          icon: Icons.notifications_active_outlined,
+          loading: _busy,
+          onPressed: _turnOn,
+        );
+      case WebPushState.denied:
+        text = 'Notifications are blocked for this site. Allow them in your '
+            'browser\'s site settings, then come back.';
+        action = TextButton(onPressed: _refresh, child: const Text('Check again'));
+      case WebPushState.needsInstall:
+        text = 'On iPhone, add CycleSync to your Home Screen first, then open '
+            'it from there to turn on notifications.';
+        action = OutlinedButton(
+          onPressed: () => context.push(AppRoutes.install),
+          child: const Text('How to add to Home Screen'),
+        );
+      case WebPushState.unsupported:
+        text = "This browser doesn't support notifications. Reminders will "
+            'show on the Home screen when you open CycleSync.';
+    }
+    return SoftCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Icon(
+                state == WebPushState.enabled
+                    ? Icons.notifications_active
+                    : Icons.notifications_none,
+                color: context.colors.primary,
+              ),
+              const SizedBox(width: 12),
+              Expanded(child: Text(text, style: context.text.bodyMedium)),
+            ],
+          ),
+          if (action != null) ...[const SizedBox(height: 14), action],
+        ],
+      ),
     );
   }
 }

@@ -1,7 +1,9 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../core/platform/push_types.dart';
 import '../../domain/dates.dart';
 import '../../domain/models.dart';
+import '../../domain/reminder_planner.dart';
 
 /// Thrown when a period would overlap another recorded period.
 class PeriodOverlapException implements Exception {
@@ -60,6 +62,12 @@ abstract class CycleRepository {
 
   Future<ReminderPrefs> fetchReminders();
   Future<void> saveReminders(ReminderPrefs prefs);
+
+  /// Web push (web app only).
+  Future<String> fetchPushPublicKey();
+  Future<void> savePushSubscription(WebPushSubscriptionData sub);
+  Future<void> deletePushSubscription(String endpoint);
+  Future<void> replaceScheduledPushes(List<PlannedReminder> reminders);
 }
 
 class SupabaseCycleRepository implements CycleRepository {
@@ -314,5 +322,64 @@ class SupabaseCycleRepository implements CycleRepository {
           {...prefs.toRow(), 'user_id': _uid},
           onConflict: 'user_id',
         );
+      });
+
+  // ---------------- Web push ----------------
+
+  @override
+  Future<String> fetchPushPublicKey() async {
+    try {
+      final res = await _client.functions
+          .invoke('send-reminders', method: HttpMethod.get);
+      final data = res.data;
+      final key = data is Map ? data['publicKey'] : null;
+      if (key is String && key.isNotEmpty) return key;
+    } catch (_) {
+      // Falls through to the message below.
+    }
+    throw const AppException(
+      "Notifications aren't set up on the server yet. Please try again later.",
+    );
+  }
+
+  @override
+  Future<void> savePushSubscription(WebPushSubscriptionData sub) =>
+      _guardData(() async {
+        await _client.from('push_subscriptions').upsert(
+          {
+            'user_id': _uid,
+            'endpoint': sub.endpoint,
+            'p256dh': sub.p256dh,
+            'auth': sub.auth,
+          },
+          onConflict: 'user_id,endpoint',
+        );
+      });
+
+  @override
+  Future<void> deletePushSubscription(String endpoint) => _guardData(() async {
+        await _client
+            .from('push_subscriptions')
+            .delete()
+            .eq('user_id', _uid)
+            .eq('endpoint', endpoint);
+      });
+
+  @override
+  Future<void> replaceScheduledPushes(List<PlannedReminder> reminders) =>
+      _guardData(() async {
+        await _client.from('scheduled_pushes').delete().eq('user_id', _uid);
+        if (reminders.isEmpty) return;
+        await _client.from('scheduled_pushes').insert([
+          for (final r in reminders)
+            {
+              'user_id': _uid,
+              'kind': r.kind.name,
+              'send_at': r.at.toUtc().toIso8601String(),
+              'title': r.title,
+              'body': r.body,
+              'repeats_daily': r.repeatsDaily,
+            },
+        ]);
       });
 }

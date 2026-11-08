@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
+import 'push_types.dart';
+
 bool isInstalledWebApp() => false;
 
 bool isAppleMobileBrowser() => false;
@@ -22,3 +24,12 @@ Future<void> saveTextFile({
     ),
   );
 }
+
+Future<WebPushState> webPushState() async => WebPushState.unsupported;
+
+Future<WebPushSubscriptionData?> subscribeWebPush(String vapidPublicKey) async =>
+    null;
+
+Future<String?> currentWebPushEndpoint() async => null;
+
+Future<void> unsubscribeWebPush() async {}

@@ -6,7 +6,8 @@ plugins {
 
 android {
     namespace = "io.github.ebrahimomar0729.cyclesync"
-    compileSdk = flutter.compileSdkVersion
+    // flutter_local_notifications 23 needs SDK 37.
+    compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
     compileOptions {

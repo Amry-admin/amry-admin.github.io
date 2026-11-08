@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cyclesync/app.dart';
+import 'package:cyclesync/core/platform/push_types.dart';
 import 'package:cyclesync/core/providers.dart';
 import 'package:cyclesync/data/repositories/cycle_repository.dart';
 import 'package:cyclesync/data/services/notification_service.dart';
@@ -130,6 +131,27 @@ class FakeRepository implements CycleRepository {
 
   @override
   Future<void> saveReminders(ReminderPrefs prefs) async => reminders = prefs;
+
+  final List<PlannedReminder> scheduledPushes = [];
+  final List<WebPushSubscriptionData> pushSubs = [];
+
+  @override
+  Future<String> fetchPushPublicKey() async => 'test-key';
+
+  @override
+  Future<void> savePushSubscription(WebPushSubscriptionData sub) async =>
+      pushSubs.add(sub);
+
+  @override
+  Future<void> deletePushSubscription(String endpoint) async =>
+      pushSubs.removeWhere((s) => s.endpoint == endpoint);
+
+  @override
+  Future<void> replaceScheduledPushes(List<PlannedReminder> reminders) async {
+    scheduledPushes
+      ..clear()
+      ..addAll(reminders);
+  }
 }
 
 class FakeNotificationService extends NotificationService {

@@ -38,6 +38,17 @@ class SettingsScreen extends ConsumerWidget {
     );
     if (!ok) return;
     await ref.read(notificationServiceProvider).cancelAll();
+    if (kIsWeb) {
+      try {
+        final endpoint = await currentWebPushEndpoint();
+        if (endpoint != null) {
+          await ref.read(repositoryProvider).deletePushSubscription(endpoint);
+        }
+        await unsubscribeWebPush();
+      } catch (_) {
+        // Signing out still works if this fails.
+      }
+    }
     await ref.read(repositoryProvider).signOut();
   }
 
@@ -467,6 +478,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
     setState(() => _deleting = true);
     try {
       await ref.read(notificationServiceProvider).cancelAll();
+      if (kIsWeb) await unsubscribeWebPush();
       await ref.read(repositoryProvider).deleteAccount();
       // Router sends the user back to Welcome once signed out.
     } on AppException catch (e) {

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -70,16 +71,25 @@ final logsByDateProvider = FutureProvider<Map<DateTime, DailyLog>>((ref) async {
   return {for (final l in logs) l.date: l};
 });
 
-/// Keeps Android notifications in step with the latest data and settings.
+/// Keeps reminders in step with the latest data and settings:
+/// Android schedules local notifications; the web app schedules web pushes.
 final reminderSyncProvider = FutureProvider<void>((ref) async {
-  if (!NotificationService.supported) return;
+  if (_userId(ref) == null) return;
+  if (!kIsWeb && !NotificationService.supported) return;
   final prefs = await ref.watch(remindersProvider.future);
   final summary = await ref.watch(summaryProvider.future);
-  final service = ref.watch(notificationServiceProvider);
   final planned = prefs.anyEnabled
       ? ReminderPlanner.plan(prefs: prefs, summary: summary, now: DateTime.now())
       : const <PlannedReminder>[];
-  await service.apply(planned);
+  if (kIsWeb) {
+    try {
+      await ref.read(repositoryProvider).replaceScheduledPushes(planned);
+    } catch (_) {
+      // Web push tables not set up yet; in-app reminders still work.
+    }
+    return;
+  }
+  await ref.watch(notificationServiceProvider).apply(planned);
 });
 
 /// Call after any change to periods or logs.
