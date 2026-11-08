@@ -45,7 +45,8 @@ class AppConfig {
     final parts = key.split('.');
     if (parts.length != 3) return false;
     try {
-      final payload = utf8.decode(base64Url.decode(base64Url.normalize(parts[1])));
+      final payload =
+          utf8.decode(base64Url.decode(base64Url.normalize(parts[1])));
       final json = jsonDecode(payload);
       return json is Map && json['role'] == 'service_role';
     } catch (_) {
