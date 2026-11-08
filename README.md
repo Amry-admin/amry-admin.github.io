@@ -9,16 +9,14 @@ Private period and cycle tracker. Flutter (Android + web/PWA) with Supabase.
 
 | Phase | What | State |
 | --- | --- | --- |
-| 1 | Foundation: theme, navigation, Supabase connection check, CI | Done |
-| 2 | Sign-up, login, onboarding, disclaimer | Not started |
-| 3 | Period + daily logging, calendar, cycle calculations | Not started |
-| 4 | History, insights, CSV export | Not started |
-| 5 | Reminders, account deletion, privacy tests | Not started |
-| 6 | PWA polish, signed APK, sharing | Not started |
+| 1 | Foundation, CI | Done |
+| 2–5 | All screens: welcome, auth, onboarding, home, calendar, logging, insights, history, settings, reminders, export, delete account | Done (beta) |
+| 6 | Web push, Add to Home Screen, new design and logo | Done (beta) |
+| 7 | Beta testing, signed APK, legal review | Next |
 
 ## Live app
 
-Web: https://ebrahim-omar0729.github.io/cyclesync/ (deployed by GitHub Actions)
+Web: https://cyclesyncapp.github.io/ (deployed by GitHub Actions)
 
 APK: open the latest successful **Build Android APK** run under the **Actions**
 tab and download the `cyclesync-release-apk` artifact.
@@ -28,7 +26,7 @@ tab and download the `cyclesync-release-apk` artifact.
 Prerequisites: Flutter stable, Android Studio (for the Android SDK), Git.
 
 ```bash
-git clone https://github.com/Ebrahim-omar0729/cyclesync.git
+git clone https://github.com/cyclesyncapp/cyclesyncapp.github.io.git cyclesync
 cd cyclesync
 flutter pub get
 
@@ -89,3 +87,10 @@ project first), then commit it. Never edit an applied migration.
 
 Use `flutter pub add <package>` so versions match the installed Flutter,
 then commit both `pubspec.yaml` and `pubspec.lock`.
+
+## Web push (web app reminders)
+
+`supabase/functions/send-reminders` sends reminders that the app writes to
+`scheduled_pushes`. A `pg_cron` job (migration 3) calls it every 5 minutes.
+Deploy it with JWT verification off. Web-push keys are created by the
+function on first use and kept in `push_config`, which only the server can read.
