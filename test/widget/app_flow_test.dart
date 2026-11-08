@@ -109,6 +109,51 @@ void main() {
     expect(saved.moods, [Mood.calm]);
   });
 
+  testWidgets('insights show suggestions, trends and patterns',
+      (tester) async {
+    _phone(tester);
+    final starts = [
+      DateTime.utc(2026, 7, 1),
+      DateTime.utc(2026, 7, 29),
+      DateTime.utc(2026, 8, 28),
+      DateTime.utc(2026, 9, 25),
+      DateTime.utc(2026, 10, 24),
+    ];
+    final repo = FakeRepository(periods: [
+      for (var i = 0; i < starts.length; i++)
+        Period(
+          id: 'p$i',
+          start: starts[i],
+          end: starts[i].add(const Duration(days: 4)),
+        ),
+    ]);
+    for (final s in starts) {
+      final d = s.add(const Duration(days: 1));
+      repo.logs[d] = DailyLog(
+        id: 'l${d.day}${d.month}',
+        date: d,
+        flow: FlowLevel.heavy,
+        symptoms: const [Symptom.cramps],
+      );
+    }
+    await tester.pumpWidget(testApp(repo));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Insights').last);
+    await tester.pumpAndSettle();
+    expect(find.text('Suggestions for you'), findsOneWidget);
+    expect(find.textContaining('Cramps tends to show up'), findsOneWidget);
+
+    await tester.tap(find.text('Trends'));
+    await tester.pumpAndSettle();
+    expect(find.text('Cycle length'), findsOneWidget);
+    expect(find.text('Flow by period day'), findsOneWidget);
+
+    await tester.tap(find.text('Patterns'));
+    await tester.pumpAndSettle();
+    expect(find.text('Symptoms through your cycle'), findsOneWidget);
+  });
+
   testWidgets('wide screens use a side rail', (tester) async {
     tester.view.physicalSize = const Size(1200, 900);
     tester.view.devicePixelRatio = 1.0;
