@@ -9,8 +9,10 @@ code=$?
 cat "$out"
 if [ $code -ne 0 ]; then
   # Keep the useful lines (analyzer issues, test failures, compiler errors).
-  grep -E "error •|warning •|info •|Error:|error:|FAILED|Expected:|Actual:|Exception|issues? found|tests? (passed|failed)|Some tests failed|\[E\]" "$out" \
-    | grep -v '^\s*$' > "$out.key" || true
+  {
+    grep -A12 -E "What went wrong" "$out" || true
+    grep -E "^e: |error •|warning •|info •|Error:|error:|FAILED|Expected:|Actual:|Exception|issues? found|tests? (passed|failed)|Some tests failed|\[E\]|requires|minSdk|compileSdk" "$out" || true
+  } | grep -v '^\s*$' | awk '!seen[$0]++' > "$out.key"
   [ -s "$out.key" ] || tail -c 6000 "$out" > "$out.key"
   # Up to 8 annotations of ~3000 characters each.
   split -C 3000 -d -a 1 "$out.key" "$out.part."
